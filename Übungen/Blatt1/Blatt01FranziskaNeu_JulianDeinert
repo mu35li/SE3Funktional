@@ -70,3 +70,5 @@
         [(= grad 315) (print "NW")]
         [(< grad 360) (print "NNW")]
         [else (print "-")]))
+
+;lululu
