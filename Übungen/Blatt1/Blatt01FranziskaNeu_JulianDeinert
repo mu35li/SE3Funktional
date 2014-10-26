@@ -50,3 +50,23 @@
 (distanzAB 37.75 -122.45 21.32 -157.83); -> 3844.68805
 (distanzAB -27.10 -109.40 -12.10 -77.05); -> 3757.62222
 
+;Aufgabe 2.3
+
+(define (compas grad)  	 ; Grad -> Himmelsrichtung
+  (cond [(or (= grad  0) (= grad 360)) (print "N")]
+        [(< grad 45) (print "NNE")]
+        [(= grad 45) (print "NE")]
+        [(< grad 90) (print "ENE")]
+        [(= grad 90) (print "E")]
+        [(< grad 135) (print "ESE")]
+        [(= grad 135) (print "SE")]
+        [(< grad 180) (print "SSE")]
+        [(= grad 180) (print "S")]
+        [(< grad 225) (print "SSW")]
+        [(= grad 225) (print "SW")]
+        [(< grad 270) (print "WSW")]
+        [(= grad 270) (print "W")]
+        [(< grad 315) (print "WNW")]
+        [(= grad 315) (print "NW")]
+        [(< grad 360) (print "NNW")]
+        [else (print "-")]))
