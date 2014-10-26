@@ -50,6 +50,7 @@
 (distanzAB 37.75 -122.45 21.32 -157.83); -> 3844.68805
 (distanzAB -27.10 -109.40 -12.10 -77.05); -> 3757.62222
 
+
 ;Aufgabe 2.3
 
 (define (compas grad)  	 ; Grad -> Himmelsrichtung
@@ -71,4 +72,5 @@
         [(< grad 360) (print "NNW")]
         [else (print "-")]))
 
-;lululu
+
+
