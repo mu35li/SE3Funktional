@@ -72,5 +72,25 @@
         [(< grad 360) (print "NNW")]
         [else (print "-")]))
 
+(define (Himmelsrichtung->Grad richtung)
+  (cond [(equal? richtung "N") (print "0 grad oder 360 grad")]
+        [(equal? richtung "NE") (print "45 grad")]
+        [(equal? richtung "E") (print "90 grad")]
+        [(equal? richtung "SE") (print "135 grad")]
+        [(equal? richtung "S") (print "180 grad")]
+        [(equal? richtung "SW") (print "225 grad")]
+        [(equal? richtung "W") (print "270 grad")]
+        [(equal? richtung "NW") (print "315 grad")]
+        [else (print "-")])
+)
 
+(Himmelsrichtung->Grad "N")
+(Himmelsrichtung->Grad "NE")
+(Himmelsrichtung->Grad "E")
+(Himmelsrichtung->Grad "SE")
+(Himmelsrichtung->Grad "S")
+(Himmelsrichtung->Grad "SW")
+(Himmelsrichtung->Grad "W")
+(Himmelsrichtung->Grad "NW")
+(Himmelsrichtung->Grad "Peter")
 
