@@ -1,0 +1,70 @@
+; 1	-> hier fehlen noch Erläuterungen
+
+#|
+1. 'Plueschi
+2. 'Plueschi
+3. 'miau
+4. 'katze
+5. 'Plueschi
+6. 'Plueschi : undefined
+7. 'miau
+8. 'harry
+9. '(miau katze)
+10. '(Plueschi)
+11. 'Plueschi
+12. 1,732..
+13. 'tiger
+14. 'Plueschi
+|#
+
+
+
+; 2.1
+
+(define (fakultaet n)
+  (if (= n 0)
+      1
+      (* n (fakultaet (- n 1)))))
+
+
+
+; 2.2 -> ohne rekursion, also noch falsch
+
+(define (power r n)
+  (if(= n 0)
+  1
+  (if(odd? n)
+      (* r (expt r (- n 1)))
+      (expt (expt r (/ n 2)) 2)
+     )  
+   )  
+  )
+
+
+
+; 3
+
+(define (type-of type)
+  (cond
+    [(boolean? type) (print "Boolean")]
+    [(pair? type)(print "Pair")]
+    [(list? type)(print "List")]
+    [(symbol? type)(print "Symbol")]
+    [(number? type)(print "Number")]
+    [(char? type)(print "Char")]
+    [(string? type)(print "String")]
+    [(vector? type)(print "Vector")]
+    [(procedure? type)(print "Procedure")]
+    [else (print "-")]
+    ))
+
+(type-of (* 2 3 4))		; Number
+(type-of (not 42))		; Boolean
+(type-of '(eins zwei drei))	; Pair
+(type-of '())			; List
+(define (id z) z)		; Procedure
+(type-of (id sin))		; Char
+(type-of (string-ref "Harry_Potter_und_der_Stein_der_Weisen" 3))	; Procedure
+(type-of (lambda (x) x))	; Procedure
+(type-of type-of)		; Procedure
+(type-of (type-of type-of))	; -
