@@ -1,4 +1,7 @@
-; 1	-> hier fehlen noch Erläuterungen
+Abgabe von Franziska Neu und Julian Deinert
+
+Martin Noeske Übung Donnerstag 10:15-11:45
+; 1	
 
 #|
 1. 'Plueschi ;nach Definition. Ist gleichbedeutend mit (quote Plueschi)
@@ -28,18 +31,43 @@
 
 
 
-; 2.2 -> ohne rekursion, also noch falsch
+; 2.2 
 
 (define (power r n)
-  (if(= n 0)
-  1
-  (if(odd? n)
-      (* r (expt r (- n 1)))
-      (expt (expt r (/ n 2)) 2)
-     )  
-   )  
+  (if (= n 0)
+      1
+  (if (odd? n)
+      (* (power r (- n 1)) r)
+      (expt (power r (/ n 2)) 2)
+    )
+  )
+ )
+
+; 2.3
+(define (rekEuler genauigkeit)
+  (if (= genauigkeit 1)
+      1
+      (+ (rekEuler (- genauigkeit 1)) (/ genauigkeit (fakultaet (- genauigkeit 1))))
+      )
+  )
+(define (euler genaugikeit)
+  (/ (rekEuler genaugikeit) 2)
   )
 
+; da (fakultaet 500) > (power 10 1000) können die ersten 1000 stellen von e mit (euler 500) ermittelt werden
+
+
+; 2.4
+
+(define (rekpi genauigkeit)
+  (if (= genauigkeit 1)
+      1
+      (+ (/ (power -1 (- genauigkeit 1)) (+ 1 (* 2 (- genauigkeit 1)))) (rekpi (- genauigkeit 1)))
+      )
+  )
+ (define (pi genauigkeit)
+   (* 4 (rekpi genauigkeit))
+   )
 
 
 ; 3
