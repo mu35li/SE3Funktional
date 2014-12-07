@@ -25,4 +25,41 @@ Baumrekursion	-> zwei rekursive funktionen werden aufgerufen (merge-sort) und mi
 
 ;2.
 
+#lang racket
+(require 2htdp/image)
 
+;soll das grün eines Baumes zeichnen, gr gibt die Größe des Anfangsdreiecks an
+(define (busch gr)  
+            (cond 
+                 [(< gr 0)    (triangle 0 "outline" "darkgreen") ]
+                 
+                 ;overlay/offset verschiebt das erste Image und malt das 2. darüber
+                 ;die Fallunterscheidung ist dafür das die Farbe kein Wert über 255 bekommt
+                 [(> gr 200)  (overlay/offset  (busch (- gr 10)) 0 (/ gr 4) (triangle gr "solid"  "green"))]
+                 [(<= gr 200) (overlay/offset  (busch (- gr 10)) 0 (/ gr 4) (triangle gr "solid" (color 0 (+ gr 55) 0 255))) ]
+                 ))
+
+(define baumMitStern (above/align
+              "center"
+            
+              ;der Stern
+              (star-polygon 25 5 2 "solid" "gold")
+              
+              ;das grüne vom Baum
+              (busch 120) 
+             
+             ;Stamm
+              (rectangle 10 20 "solid" "brown"))
+             )
+(define baum (above/align
+              "center"
+            
+              ;das grüne vom Baum
+              (busch 100) 
+             
+             ;Stamm
+              (rectangle 10 20 "solid" "brown"))
+             )
+
+
+(beside baum baumMitStern baum)
