@@ -1,0 +1,28 @@
+;1.
+#|
+
+kopfstueck:
+direkt		-> die Funktion ruft sich selbst wieder auf
+linear-rekursiv -> es erfolgt nur ein rekursiver Aufruf in der Funktion
+
+
+endstueck:
+direkt		-> die Funktion ruft sich selbst wieder auf
+endrekursiv 	-> es gibt kein nachklappern
+linear-rekursiv -> es erfolgt nur ein rekursiver Aufruf in der Funktion
+
+merge:
+direkt		-> die Funktion ruft sich selbst wieder auf
+linear-rekursiv -> es erfolgt nur ein rekursiver Aufruf in der Funktion
+
+
+merge-sort:
+indirekt 	-> die Funktion ruft andere rekursive Funktionen auf (kopfstueck, endstueck, merge)...
+direkt		-> ... ruft sich dabei aber auch selbst wieder auf
+geschachtelt 	-> innerhalb eines rekursiven Aufrufs (merge) wird eine rekursive Funktion (merge-sort) 			aufgerufen
+Baumrekursion	-> zwei rekursive funktionen werden aufgerufen (merge-sort) und miteinander verknüpft 				(rel<?), dadurch entsteht bei der Evaluation eine baumartige Aufrufskette 
+|#
+
+;2.
+
+
