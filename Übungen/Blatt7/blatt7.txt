@@ -1,0 +1,72 @@
+#lang racket
+(require 2htdp/image)
+;1
+
+;range mit allgemeiner Rekursion -> funzt so nicht, endlosschleife
+
+(define (rangeAllg intervall n)
+  (if (= (car intervall) (cdr intervall)) 
+     '()
+     (cons (car intervall) 
+           (rangeAllg (cons (+ (car intervall) (/ (- (cdr intervall) (car intervall)) n))  
+                            (cdr intervall)) 
+                      n) ))
+  )
+
+
+;range mit Endrekursion -> gleiches prob wie bei rangeAllg
+(define (rangeEnd intervall n acc) 
+  (if(= (length acc) n)
+  acc
+  (rangeEnd (cons (+ (car intervall) (/ (cdr intervall) n)) (cdr intervall))
+            n            
+            (append acc (list (car intervall))))
+  ))
+
+;range mit Funktion höherer Ordnung
+(define (rangeHF intervall n) 
+  (build-list n (lambda (x)  
+                  (+ (car intervall )
+                                (* x (/ (- (cdr intervall) 
+                                           (car intervall)) n)))))  
+  )
+(car '(1 . 2))
+
+(rangeHF '(2 . 10) 5)
+;(rangeAllg '(2 . 10) 5)
+;(rangeEnd '(2 . 10) 5 '())
+
+
+;2.1
+(define (function->points f intervall n)
+ (map cons (rangeHF intervall n)
+      (map f (rangeHF intervall n))
+      )
+  )
+
+(function->points sqr '(0 . 10) 5)
+
+;2.2 -rescale1d noch nicht ganz richtig
+(define (rescale1d l intervall)
+  (rangeHF intervall (length l))
+  )
+
+(rescale1d '(0 2 4 6 8) '(10 . 50))
+
+(define (rescale2d points intervall1 intervall2)
+   (map cons (rescale1d points intervall1)
+         (rescale1d points intervall1)
+         )
+  )
+;2.3
+
+
+(define (draw-points pointlist)
+  (place-image (ellipse 5 5 "solid" "blue")
+               (caar pointlist)
+               (cdar pointlist)
+               (empty-scene 600 800))
+  
+  )
+(draw-points '((1 . 2) (1 . 1)))
+(cdar '((1 . 2) (1 . 1)))
