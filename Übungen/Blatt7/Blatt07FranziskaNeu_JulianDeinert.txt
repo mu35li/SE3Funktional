@@ -1,0 +1,111 @@
+#lang racket
+(require 2htdp/image)
+;1
+
+
+;range mit allgemeiner Rekursion 
+(define (rangeAllg intervall n)
+  (if (= n 0) 
+     '()
+     (cons (car intervall) 
+           (rangeAllg (cons (+ (car intervall) (/ (- (cdr intervall) (car intervall)) n))  
+                            (cdr intervall)) 
+                      (- n 1) ))
+     )
+  )
+
+
+;range mit Endrekursion 
+(define (rangeEnd intervall n acc) 
+  (if (= 0 n)
+  (reverse acc)
+  (rangeEnd (cons (+ (car intervall) (/ (- (cdr intervall) (car intervall)) n)) (cdr intervall)) (- n 1) (cons (car intervall) acc))
+  )
+ )
+
+(define (rangeEndWrap intervall n)
+  (rangeEnd intervall n '())
+  )
+
+;range mit Funktion höherer Ordnung
+(define (rangeHF intervall n) 
+  (build-list n (lambda (x)  
+                  (+ (car intervall )
+                                (* x (/ (- (cdr intervall) 
+                                           (car intervall)) n)))))  
+  )
+
+;Test
+(rangeHF '(2 . 10) 5)
+(rangeAllg '(2 . 10) 5)
+(rangeEnd '(2 . 10) 5 '())
+
+
+;2.1
+(define (function->points f intervall n)
+ (map cons (rangeHF intervall n)
+      (map f (rangeHF intervall n))
+      )
+  )
+
+;Test
+(function->points sqr '(0 . 10) 5)
+
+;2.2 
+(define (rescale1d l intervall)
+ (map (lambda (x) (+ (car intervall) 
+                     (* (- (cdr intervall) (car intervall)) 
+                        (/ (- x (first l)) 
+                           (- (last l) (first l))))))
+  l))
+
+;Test
+(rescale1d '(0 2 4 6 8) '(10 . 50))
+
+(define (FirstElement l)
+  (if (null? l)
+      '()
+      (cons (caar l) (FirstElement (cdr l)))))
+
+(define (SecondElement l)
+  (if (null? l)
+      '()
+      (cons (cdar l) (SecondElement (cdr l)))))
+
+(define (rescale2d points intervall1 intervall2)
+ (map cons 
+      (rescale1d (FirstElement points) intervall1) 
+      (rescale1d (SecondElement points) intervall2) )
+)
+;Test
+(define test (rescale2d '((0 . 0) (2 . 4) (4 . 16) (6 . 36) (8 . 64)) 
+           '(10 . 50)
+           '(5 . 25)))
+
+
+;2.3
+
+(define bluePoint (ellipse 4 4 "solid" "blue"))
+
+(define (draw-point image point scene ) 
+  (place-image image (car point) (- (image-height scene) (cdr point)) scene))
+
+(define (draw-points l scene )
+  (if (null? l)
+      scene
+      (draw-point bluePoint (car l) (draw-points (cdr l) scene ) )))
+
+(define (draw-points-wrap l)
+  (draw-points l (empty-scene 800 600) ))
+
+;Test
+(draw-points-wrap test)
+
+;2.4
+
+(define (plot-function f intervall n)
+  (draw-points-wrap (rescale2d (function->points f intervall n) 
+                               '(0 . 800) '(0 . 600))))
+;Test
+(plot-function sqr '(0 . 100) 100)
+
