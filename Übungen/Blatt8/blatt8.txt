@@ -1,0 +1,259 @@
+#lang racket
+;1
+
+#|
+1.)
+Eine Funktion ist eine Funktion höherer Ordnung, 
+wenn der Funktion eine Funktion übergeben wird, 
+die sie zur weiteren verarbeitung dann nutzt, 
+zb um die funktion auf alle elemente einer Liste anzuwenden.
+
+
+2.)
+a)
+foldl ist eine Funktion höherer Ordnung, 
+denn es nimmt die Elemente einer Liste von links und rechnet sie anhand einer 
+übergebenen Funktion zusammen.
+
+b)
+kopf-oder-schwanz ist keine Funktion höherer Ordnung, da der Funktion nur ein Zahlenwert übergeben wird,
+welcher auf < 0 geprüft wird.
+
+
+c)
+pimento ist eine F.h.O., da ihr eine Funktion übergeben wird, die auf arg1 und arg2 angewendet wird.
+
+d)
+my-tan ist keine F.h.O., da ihr nur ein Zahlenwert übergeben wird.
+
+3.)
+-> 35 ------>> KP
+
+
+4.)
+(foldl (curry * 2) 1 '(1 1 2 3))
+-> 96
+weil *2 auf jedes Element angewendet wird und von links die Werte aufmultipliziert werden, also 2*2*4*6=96
+
+(map cons '(1 2 3 4) '(1 2 3 4))
+-> '((1 . 1) (2 . 2) (3 . 3) (4 . 4))
+weil durch map die einzelnen Elemente der Listen mit cons verbunden werden
+
+(filter pair? '((a b ) () 1 (())) )
+-> '((a b) (()))
+weil die Liste nach Paaren gefiltert wird
+
+(map (compose (curry + 33) (curry * 1.8))
+     '(5505 100 0 1 1000 -273.15))
+-> '(9942.0 213.0 33 34.8 1833.0 -458.66999999999996)
+weil
+
+|#
+
+;2
+
+(define (absolutbetrag xs)
+  (map abs xs))
+
+(define (durch3 x)
+  (= (modulo x 3) 0))
+
+(define (teillisteDurch3 xs)
+  (filter durch3 xs))
+
+(define (summeGroesser10 xs)
+  (foldl + 0 (filter (curry < 10) xs))
+  )
+
+(define (zweiListen f xs)
+  (cons (filter f xs)
+        (list (filter (curry negate f) xs)))
+  )
+
+
+
+;der kram für 3
+
+
+(require 2htdp/image)
+(provide 
+ show-set-card ; Anzeigen einer Spielkarte
+ ; (show-set-card  n the-pattern the-mode the-color)
+ *cardwidth* ; die Breite einer Spielkarte
+ *cardheight* ; die Hoehe einer Spielkarte
+ *bg-color* ; die hIntergrundfarbe der Karten
+ set-cardwith! 
+ set-bg-color!
+ *example*; ein Bild mit Beispielkarten
+ )
+
+(define *cardwidth* 80)
+(define *cardheight* (round (* *cardwidth* (sqrt 2.00))))
+(define *patternwidth* (round (/ *cardwidth* (sqrt 2.00))))
+(define *schraffurabstand* 4)
+
+(define *bg-color* 'WhiteSmoke);'Gainsboro)
+
+(define (set-cardwith! w)
+  (set! *cardwidth* 80)
+  (set! *cardheight* (round (* *cardwidth* (sqrt 2.00))))
+  (set! *patternwidth* (round (/ *cardwidth* (sqrt 2.00))))
+  )
+
+(define (set-bg-color! c)
+  (set! *bg-color* c))
+
+
+(define (schraffur im y-pos)
+  ; horizontale Schraffur in der Farbe *bg-color*,
+  ; Abstand = *schraffurabstand*
+  
+  (if (>= y-pos (image-height im)) im
+      (schraffur
+       (add-line
+        (add-line im 
+                  0 y-pos (image-width im) y-pos *bg-color*)
+        0 y-pos (image-width im) (+ 1 y-pos) *bg-color*)
+       
+       (+ y-pos *schraffurabstand*))))
+
+
+
+(define (waves the-mode the-color)
+  ; generate a wave 
+  (let* ([radius (* *patternwidth* 0.5)]
+         [inner-radius (* radius 0.3)]
+         [lower-arch  ; Halbkreis nach unten
+          (crop 0 radius *patternwidth* radius 
+                ; x y width height image
+                (overlay (circle (* 1 inner-radius) 'outline the-color)
+                         ; Innenrand verstärken
+                         (overlay (circle inner-radius the-mode *bg-color*)
+                                  (circle radius the-mode the-color))))]
+         [upper-arch ; Halbkreis nach oben
+          (flip-vertical lower-arch)])
+    (scale 0.7 
+           (rotate 7
+                   (scale/xy
+                    1 0.5 
+                    (overlay/xy 
+                     upper-arch 
+                     (+ radius inner-radius)
+                     (- radius 1) lower-arch))) )))
+
+(define (ovals the-mode the-color)
+  (ellipse *patternwidth*
+           (* 0.25 *patternwidth*) the-mode the-color))
+
+(define (rects the-mode the-color)
+  (rectangle *patternwidth*
+             (* 0.25 *patternwidth*) 
+             the-mode the-color))
+
+(define (stack-patterns n pat)
+  ; stapele das Muster
+  (let ([gap (rectangle 
+              1 (round(/ *cardheight* 30))
+              'outline *bg-color*)])
+    (if (= n 1) pat
+        (above pat gap (stack-patterns (- n 1) pat)))))
+
+(define (make-pattern  pat-gen n the-mode the-color )
+  ; pat-gen: mode color ? image?
+  ; n: 1, 2, or 3
+  ; the-mode: 'outline, 'solid, 'hatched
+  ; the-color: 'red, 'green, 'blue
+  (let* ([mode (if (eq? the-mode 'hatched)
+                   'solid the-mode)]
+         [pat-stack (stack-patterns n (pat-gen mode the-color))]
+         )
+    (if (eq? the-mode 'hatched)
+        (schraffur pat-stack 1)
+        pat-stack)))
+
+
+(define (show-set-card  n the-pattern the-mode the-color)
+  ; n: 1, 2, or 3
+  ; the-pattern: 'waves, 'oval, 'rectangle
+  ; the-mode: 'outline, 'solid, 'hatched
+  ; the-color: 'red, 'green, 'blue
+  (let ([pat-gen 
+         (case the-pattern
+           [(waves) waves]
+           [(oval) ovals]
+           [(rectangle) rects]
+           [else rects])]; default
+        [background 
+         (overlay 
+          (rectangle 
+           *cardwidth* *cardheight* 'solid *bg-color*)
+          (rectangle
+           (+ 2 *cardwidth*) (+ 2 *cardheight*) 
+           'outline 'silver)
+          (rectangle
+           (+ 4 *cardwidth*) (+ 4 *cardheight*) 
+           'outline 'silver)
+          )])
+    (overlay 
+     (make-pattern  pat-gen n the-mode the-color )
+     background)
+    ))
+
+
+(define *example*
+  (frame
+   (above
+    (beside
+     (show-set-card  3 'rectangle 'solid 'green)
+     (show-set-card  3 'rectangle 'hatched 'blue)
+     (show-set-card  3 'rectangle 'outline 'red)
+     (show-set-card  1 'oval 'outline 'red))
+    (beside
+     (show-set-card  2 'oval 'hatched 'red)
+     (show-set-card  2 'waves 'hatched 'red)
+     (show-set-card  2 'oval 'solid 'blue)
+     (show-set-card  2 'waves 'outline 'blue))))
+  )
+
+(require swindle/extra)
+
+;3.1
+
+(define (show-card l)
+  (show-set-card (first l) (second l) (third l) (fourth l)))
+
+;3.2
+
+;Erzeugt eine Liste mit allen Karten (jeweils als Liste der Eigenschaften dargestellt)
+(define all-cards (amb-collect
+   
+   (let ((numbr (amb 1 2 3))
+         (form (amb 'oval 'waves 'rectangle))
+         (inner (amb 'outline 'hatched 'solid))
+         (color (amb 'blue 'red 'green)))
+     
+   (cons numbr (cons form (cons inner (list color)))))
+ ))
+
+(map show-card all-cards)
+
+;3.3
+
+;überprüft, ob alle 3 eigenschaften gleich oder unterschiedlich sind
+(define (setrule? a b c)
+  (or (= (length (remove-duplicates (list a b c))) 1)
+      (= (length (remove-duplicates (list a b c))) 3))
+     
+  )
+
+;brauchen wir fürs folden
+(define (und a b)
+  (and a b))
+
+(define (is-a-set? l)
+  (foldl und #t (apply (lambda (x y z) (map setrule? x y z)) l))
+   )
+
+
+(is-a-set? '((2 red oval hatched) (2 red rectangle hatched) (2 red wave hatched))) ;muss true ergeben
+(is-a-set? '((2 red oval hatched) (2 blue rectangle hatched) (2 red wave hatched))) ; muss false ergeben
