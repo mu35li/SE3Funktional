@@ -1,0 +1,169 @@
+#lang racket
+;Aufgabe 1
+#/
+1. 0 da zunächst (- 2 5) -3 ergibt, dann -3 als min wert ausgegeben wird und dann von 0 und -3 der max wert also 0 ausgegebem wird 
+2. '(+ (- 2 13) 11) der ausdruck wird gequotet und damit nicht evaluiert
+3. 'Jahre Es wird zunächst das Zweite element der liste ausgegeben und davon das erste. also 'Jahre
+4. '() returnt das 3. element der liste. Da nur 3 vorhanden sind, wird eine leere liste returned
+5. 'Weihnachtsfest erst wird das Paar '(das . Weihnachtsfest) ausgegeben und davon dann das 2. element
+6. '(Listen ganz einfach und) Es wird eine neue liste aus den beiden elementen erstellt. eines ist eine liste.
+7. '(Paare . auch) es wird ein neues paar erstellt
+8. #t true da die erstellte liste aus den gequoteten werten mit der anderen liste übereinstimmt
+9. #f false da bei cons im zweiten argument nicht alle gequotet sind
+/#
+
+;Aufgabe 2
+;<Notruf>                   ::= <Notzeichen> <Notzeichen> <Notzeichen> <Identifikation> <Position> <Art> <Informationen> <peilzeichen> <peilzeichen> <unterschrift> <endzeichen>
+;<Notzeichen>               ::= MAYDAY
+;<Identifikation>           ::= <begin> <Schiffsname> <Schiffsname> <Schiffsname> <buchstabiertRufzeichen> <Notzeichen> <Schiffsname> <buchstabiertSchiffsname> <buchstabiertRufzeichen>
+;<begin>                    ::= HIER IST | DELTA ECHO
+;<Schiffsname>              ::= schiffsname
+;<buchstabiertRufzeichen>   ::= das rufzeichen buchstabiert
+;<buchstabiertSchiffsname>  ::= der schiffsname buchstabiert
+;<Position>                 ::= position
+;<Art>                      ::= art
+;<Informationen>            ::= informationen
+;<peilzeichen>              ::= --
+;<unterschrift>             ::= schiffsname <buchstabiertRufzeichen>
+;<endzeichen>               ::= OVER
+
+
+
+(define alphabet (hash #\A "Alfa"
+                 #\B "Bravo"
+                 #\C "Charlie"
+                 #\D "Delta"
+                 #\E "Echo"
+                 #\F "Foxtrott"
+                 #\G "Golf"
+                 #\H "Hotel"
+                 #\I "India"
+                 #\J "Juliett"
+                 #\K "Kilo"
+                 #\L "Lima"
+                 #\M "Mike"
+                 #\N "November"
+                 #\O "Oscar"
+                 #\P "Papa"
+                 #\Q "Quebec"
+                 #\R "Romeo"
+                 #\S "Sierra"
+                 #\T "Tango"
+                 #\U "Uniform"
+                 #\V "Viktor"
+                 #\W "Whiskey"
+                 #\X "X-ray"
+                 #\Y "Yankee"
+                 #\Z "Zulu"
+                 #\0 "Nadazero"
+                 #\1 "Unaone"
+                 #\2 "Bissotwo"
+                 #\3 "Terrathree"
+                 #\4 "Kartefour"
+                 #\5 "Pantafive"
+                 #\6 "Soxisix"
+                 #\7 "Setteseven"
+                 #\8 "Oktoeight"
+                 #\9 "Novenine"
+                 #\, "Decimal"
+                 #\. "Stop"
+                 #\space " ")
+  )
+
+(define (codierung buchstabe)
+  (if (string? buchstabe)
+  (hash-ref alphabet (string-ref buchstabe 0))
+  (hash-ref alphabet buchstabe)
+  )
+)
+
+
+(define (buchstabieren string)
+  (let [(liste (string->list string))]
+  (if (> (length liste) 1)
+      (string-append (codierung (upper-case(car liste))) " " (buchstabieren (list->string(list-tail liste 1))) )
+      (codierung (upper-case(car liste)))
+  )
+ )
+)
+(define (upper-case char)
+  (let ([charint (char->integer char)])
+    (if (< 96 charint 123) (integer->char (- charint 32)) char))) 
+
+         
+(define (ueberschrift name rufzeichen)
+  (string-append (notzeichen 3) "\n" 
+                          "HIER IST " (schiffsname name 3) "\n" 
+                          (buchstabieren rufzeichen) " " "\n" 
+                          (notzeichen 1) (schiffsname name 1) " " (buchstabieren name) " " (buchstabieren rufzeichen) " " )
+  
+)
+
+(define (notzeichen n)
+  (if (= n 1)
+  "MAYDAY "
+  (string-append "MAYDAY " (notzeichen (- n 1)))
+  )
+)
+
+(define (schiffsname name n)
+  (if (= n 1)
+  name
+  (string-append name " " (schiffsname name (- n 1)))
+  )
+)
+
+
+(define (unterschrift name rufzeichen)
+  (string-append (schiffsname name 1) " " (buchstabieren rufzeichen))
+  )
+(define (position string)
+  (string-append "NOTFALLPOSITION: " string)
+  )
+(define (type string)
+  string
+  )
+(define (infos string)
+  string
+  )
+
+(define (notmeldung name rufzeichen pos art informationen)
+  (display (string-upcase(string-append (ueberschrift name rufzeichen) "\n"
+                          (position pos) "\n"
+                          (type art) "\n"
+                          (infos informationen) " --\n"
+                          (unterschrift name rufzeichen) "\n"
+                          "OVER \n\n")))
+  )
+(notmeldung "babette" "DEJY" "ungefaehr 10 SM nordoestlich leuchturm kiel notfallzeit 1000 UTC" "schwerer wassereinbruch wir sinken" "keine verletzten vier mann gehen in die rettungsinsel ich sende den traeger")
+(notmeldung "Amira" "AMRY" "53grad 56' N, 006grad 31' E" "nach kenterung in schwerer See sinkt" "15 Mann an Bord, das Schiff ist 15m lang, roter Rumpf. Notfallzeit 1640 UTC") 
+
+;Aufgabe 3
+;bei der inneren reduktion werden die innersten Terme zuerst und die äußersten zuletzt ausgewertet.
+;bei der äußeren reduktion werden die äußersten Terme zuerst und die innersten zuletzt ausgewertet, 
+;außer die auswertung eines inneren termes ist notwendig für die auswertung eines äußeren.
+;
+;In Racket wird Strikte innere Reduktion + vorgezogene Auswertung
+;
+;Special Form Expressions werden nicht wie reguläre funktionale Racket-expressions ausgewertet.
+;Wie genau sie ausgewertet werden ist dabei einzlend definiert. Siehe hierzu S.352-355 im Skript
+;
+;(hoch3 (* 3 (+ 1 (hoch3 2))))
+;innere reduktion
+;--> (hoch3 (* 3( + 1 8)))     ; (hoch3)
+;--> (hoch3 (* 3 9))           ; (+)
+;--> (hoch3 27)                ; (*)
+;--> 19683                     ; (hoch3)
+;
+;äußere reduktion
+;---> (* (* 3 (+ 1 (hoch3 2))) (* 3 (+ 1 (hoch3 2))) (* 3 (+ 1 (hoch3 2)))) ; (hoch3)
+;---> (* (* 3 (+ 1 8)) (* 3 (+ 1 (hoch3 2))) (* 3 (+ 1 (hoch3 2))))         ; (hoch3)
+;---> (* (* 3 (+ 1 8)) (* 3 (+ 1 8)) (* 3 (+ 1 (hoch3 2))))                 ; (hoch3)
+;---> (* (* 3 (+ 1 8)) (* 3 (+ 1 8)) (* 3 (+ 1 8)))                         ; (hoch3)
+;---> (* (* 3 9) (* 3 (+ 1 8)) (* 3 (+ 1 8)))                               ; (+)
+;---> (* (* 3 9) (* 3 9) (* 3 (+ 1 8)))                                     ; (+)
+;---> (* (* 3 9) (* 3 9) (* 3 9))                                           ; (+)
+;---> (* 27 (* 3 9) (* 3 9))                                                ; (*)
+;---> (* 27 27 (* 3 9))                                                     ; (*)
+;---> (* 27 27 27)                                                          ; (*)
+;---> 19683                                                                 ; (*)

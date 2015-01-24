@@ -53,7 +53,7 @@
 
 ;Aufgabe 2.3
 
-(define (compas grad)  	 ; Grad -> Himmelsrichtung
+(define (Grad->Himmelsrichtung)  	 ; 
   (cond [(or (= grad  0) (= grad 360)) (print "N")]
         [(< grad 45) (print "NNE")]
         [(= grad 45) (print "NE")]
@@ -83,7 +83,9 @@
         [(equal? richtung "NW") (print "315 grad")]
         [else (print "-")])
 )
-
+(Grad->Himmelsrichtung 44)
+(Grad->Himmelsrichtung 145)
+(Grad->Himmelsrichtung 999)
 (Himmelsrichtung->Grad "N")
 (Himmelsrichtung->Grad "NE")
 (Himmelsrichtung->Grad "E")

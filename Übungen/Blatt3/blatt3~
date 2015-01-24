@@ -1,0 +1,117 @@
+#lang racket
+;Aufgabe 1
+;1. Hashtable bietet sich an, da zu jedem Key (Buchstaben) genau ein Value (Schlüssel) gehört.
+(define alphabet (hash #\A "Alfa"
+                 #\B "Bravo"
+                 #\C "Charlie"
+                 #\D "Delta"
+                 #\E "Echo"
+                 #\F "Foxtrott"
+                 #\G "Golf"
+                 #\H "Hotel"
+                 #\I "India"
+                 #\J "Juliett"
+                 #\K "Kilo"
+                 #\L "Lima"
+                 #\M "Mike"
+                 #\N "November"
+                 #\O "Oscar"
+                 #\P "Papa"
+                 #\Q "Quebec"
+                 #\R "Romeo"
+                 #\S "Sierra"
+                 #\T "Tango"
+                 #\U "Uniform"
+                 #\V "Viktor"
+                 #\W "Whiskey"
+                 #\X "X-ray"
+                 #\Y "Yankee"
+                 #\Z "Zulu"
+                 #\0 "Nadazero"
+                 #\1 "Unaone"
+                 #\2 "Bissotwo"
+                 #\3 "Terrathree"
+                 #\4 "Kartefour"
+                 #\5 "Pantafive"
+                 #\6 "Soxisix"
+                 #\7 "Setteseven"
+                 #\8 "Oktoeight"
+                 #\9 "Novenine"
+                 #\, "Decimal"
+                 #\. "Stop"
+                 #\space " ")
+  )
+
+;2.
+(define (codierung buchstabe)
+  (if (string? buchstabe)
+  (hash-ref alphabet (string-ref buchstabe 0))
+  (hash-ref alphabet buchstabe)
+  )
+  )
+
+;3
+(define (upper-case char)
+  (let ([buchint (char->integer char)])
+    (if (< 96 buchint 123) (integer->char (- buchint 32)) char))) 
+;4
+(define (buchstabieren string)
+  (let [(liste (string->list string))]
+  (if (> (length liste) 1)
+      (string-append (codierung (upper-case(car liste))) " " (buchstabieren (list->string(list-tail liste 1))) )
+      (codierung (upper-case(car liste)))
+  )
+    )
+  )
+(buchstabieren "NUR GROSSE BUCHSTABEN")
+(buchstabieren "Ganz normale Buchstaben")
+
+
+(require flaggen-module)
+
+(define flaggenalphabet
+  (hash #\A A
+    #\B B
+    #\C C
+    #\D D
+    #\E E
+    #\F F
+    #\G G
+    #\H H
+    #\I I
+    #\J J
+    #\K K
+    #\L L
+    #\M M
+    #\N N
+    #\O O
+    #\P P
+    #\Q Q
+    #\R R
+    #\S S
+    #\T T
+    #\U U
+    #\V V
+    #\W W
+    #\X X
+    #\Y Y
+    #\Z Z
+    #\0 Z0
+    #\1 Z1
+    #\2 Z2
+    #\3 Z3
+    #\4 Z4
+    #\5 Z5
+    #\6 Z6
+    #\7 Z7
+    #\8 Z8
+    #\9 Z9
+))
+
+(define (flagge buchstabe)
+  (if (string? buchstabe)
+  (hash-ref flaggenalphabet (string-ref buchstabe 0))
+  (hash-ref flaggenalphabet buchstabe)
+  )
+  )
+

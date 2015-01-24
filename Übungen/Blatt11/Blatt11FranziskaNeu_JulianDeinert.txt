@@ -1,0 +1,35 @@
+Aufgabe 1.1:
+
+1. ?Haus = Informatikum, ?Farbe = weiss
+
+2. unifiziert nicht
+
+3. ?Farbe=Dame
+
+4. ?Farbe=Dame
+
+5. ?andere=((k Herz Koenig) . (k Kreuz Dame))
+
+6. ?farbe=Pik , ?wert=As
+
+7. ?farbe=Pik, ?wert2=?wert, ?wert=As
+
+
+Aufgabe 1.2:
+
+1. (?- (not (not (ausleihe "K_110" ?N ))))
+
+2. (?- (leser Linux Leo ?Nr ?))
+
+3. (?-  (leser ?V ?N ?Nr ?)
+
+        (vorbestellung "P_30" ?Nr))
+
+4. (?-   (leser ?V ?N ?Nr ?Geb)
+
+        (?Geb > 1955)
+
+        (ausleihe ?Buch ?Nr)
+
+
+
