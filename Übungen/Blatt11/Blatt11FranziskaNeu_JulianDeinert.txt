@@ -31,5 +31,27 @@ Aufgabe 1.2:
 
         (ausleihe ?Buch ?Nr)
 
+Aufgabe 2:
 
+#lang lazy
+
+(define (natsAbN n)
+ (cons n (natsAbN (+ n 1))))
+
+(define (isDivisibleBySeven? x)
+ (= 0 (remainder x 7)))
+
+(define (containsSeven? x)
+ (list? (member #\7 ( string->list (number->string x)))))
+
+(define (boeseSieben stream)
+ (cons
+  (cond 
+   [(isDivisibleBySeven? (car stream)) "sum"]
+   [(containsSeven? (car stream)) "sum"]
+   [else (car stream)])
+  (boeseSieben (cdr stream))))
+
+    (define spiel (boeseSieben (natsAbN 1)))
+(!! (take 10000 spiel))   
 
